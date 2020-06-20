@@ -7,6 +7,7 @@ import {
   VictoryScatter,
   VictoryLine,
 } from 'victory-native';
+import scatter from './scatter';
 
 const createArray = (from, to, range) => {
   const arr = [];
