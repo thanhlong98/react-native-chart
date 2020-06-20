@@ -1,17 +1,16 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Button, StyleSheet, View} from 'react-native';
+import {Button, StyleSheet, View, Alert} from 'react-native';
 import VicChartScatter from '../components/vicChart';
 
 const listColors = ['#060faf', '#a83e3c', '#979797', '#363636'];
 
-export default function VicChart() {
+export default function VicChart({running}) {
   const [datas, setDatas] = useState([]);
-  const [datas2, setDatas2] = useState([]);
-  const [running, setRunning] = useState(false);
   const currentIndex = useRef(0);
   const currentColor = useRef(0);
   const direction = useRef(1);
   const interval = useRef(null);
+  const staticData = useRef(null);
 
   useEffect(() => {
     if (running) {
@@ -49,8 +48,8 @@ export default function VicChart() {
           }
 
           prev[currentIndex.current].data.push({
-            x: Math.round((lastPoint.x + 0.05) * 100) / 100,
-            y: Math.round((lastPoint.y + 0.05 * direction.current) * 100) / 100,
+            x: Math.round((lastPoint.x + 0.03) * 100) / 100,
+            y: Math.round((lastPoint.y + 0.1 * direction.current) * 100) / 100,
           });
 
           return [...prev];
@@ -61,24 +60,60 @@ export default function VicChart() {
     }
   }, [running]);
 
-  const handleStart = () => {
-    setRunning(true);
-  };
+  useEffect(() => {
+    let datasTemp = [];
+    let currentColorTemp = 0;
+    let currentIndexTemp = 0;
+    let directionTemp = 1;
 
-  const handleEnd = () => {
-    setRunning(false);
-  };
+    while (datasTemp.length <= 4) {
+      if (datasTemp.length === 0) {
+        datasTemp = [
+          {color: listColors[currentColor.current], data: [{x: 0, y: 0}]},
+        ];
+        continue;
+      }
+
+      let lastPoint = datasTemp[currentIndexTemp].data.slice(-1)[0];
+
+      if (lastPoint.y >= 2) {
+        directionTemp = -1;
+      }
+
+      if (lastPoint.x !== 0 && lastPoint.y < 0) {
+        currentIndexTemp++;
+        directionTemp = 1;
+
+        if (currentColorTemp === listColors.length - 1) {
+          currentColorTemp = 0;
+        } else {
+          currentColorTemp++;
+        }
+
+        datasTemp = [
+          ...datasTemp,
+          {
+            color: listColors[currentColorTemp],
+            data: [{x: Math.round((lastPoint.x + 0.3) * 100) / 100, y: 0}],
+          },
+        ];
+        continue;
+      }
+
+      datasTemp[currentIndexTemp].data.push({
+        x: Math.round((lastPoint.x + 0.03) * 100) / 100,
+        y: Math.round((lastPoint.y + 0.1 * directionTemp) * 100) / 100,
+      });
+    }
+
+    datasTemp.pop();
+    staticData.current = datasTemp;
+  }, []);
 
   return (
     <View>
       <VicChartScatter
-        datas={datas.map(line => ({
-          color: line.color,
-          data: line.data.map(d => ({
-            x: d.y,
-            y: Math.round((d.y / d.x) * 100) / 100,
-          })),
-        }))}
+        datas={[]}
         label={{x: 'Lít', y: 'Lít/giây'}}
         domain={{x: [0, 7.8], y: [-16, 16]}}
         padding={{y: 2}}
@@ -91,11 +126,6 @@ export default function VicChart() {
         padding={{y: 0.8}}
         tickValue={{stepX: 2, stepY: 0.8}}
       />
-
-      <View style={styles.btnContainer}>
-        <Button title="Bắt đầu" onPress={handleStart} />
-        <Button title="Kết thúc" onPress={handleEnd} />
-      </View>
     </View>
   );
 }
