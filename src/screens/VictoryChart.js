@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import VicChartScatter from '../components/vicChart';
+import useInterval from '../hooks/useInterval';
 
 const listColors = ['#060faf', '#a83e3c', '#979797', '#363636'];
 
@@ -10,102 +11,98 @@ export default function VicChart({running}) {
   const currentIndex = useRef(0);
   const currentColor = useRef(0);
   const direction = useRef(1);
-  const interval = useRef(null);
+  const lastPoint = useRef(null);
+  const [delay, setDelay] = useState(30);
 
-  useEffect(() => {
-    if (running) {
-      interval.current = setInterval(() => {
-        setDatas(prev => {
-          if (prev.length === 0) {
-            setDatas2([
-              {color: listColors[currentColor.current], data: [{x: 0, y: 0}]},
-            ]);
-            return [
-              {color: listColors[currentColor.current], data: [{x: 0, y: 0}]},
-            ];
+  useInterval(
+    () => {
+      if (!lastPoint.current) {
+        lastPoint.current = {x: 0, y: 0};
+        setDatas([
+          {
+            color: listColors[currentColor.current],
+            data: [lastPoint.current],
+          },
+        ]);
+
+        setDatas2([
+          {
+            color: listColors[currentColor.current++],
+            data: [lastPoint.current],
+          },
+        ]);
+      } else {
+        if (
+          lastPoint.current.x !== 0 &&
+          lastPoint.current.y <= 0 &&
+          direction.current === -1
+        ) {
+          direction.current = 1;
+          currentIndex.current++;
+          lastPoint.current = {x: lastPoint.current.x + 0.1, y: 0};
+
+          if (currentColor.current === listColors.length) {
+            currentColor.current = 0;
           }
 
-          let lastPoint = prev[currentIndex.current].data.slice(-1)[0];
+          setDatas(prev => [
+            ...prev,
+            {
+              color: listColors[currentColor.current],
+              data: [lastPoint.current],
+            },
+          ]);
 
-          if (lastPoint.y >= 2) {
+          setDatas2(prev2 => [
+            ...prev2,
+            {
+              color: listColors[currentColor.current++],
+              data: [
+                {
+                  x: lastPoint.current.y,
+                  y: lastPoint.current.y / lastPoint.current.x,
+                },
+              ],
+            },
+          ]);
+        } else {
+          if (lastPoint.current.y >= 2) {
             direction.current = -1;
           }
 
-          if (lastPoint.x !== 0 && lastPoint.y < 0) {
-            currentIndex.current++;
-            direction.current = 1;
+          lastPoint.current = {
+            x: lastPoint.current.x + 0.07,
+            y: lastPoint.current.y + 0.09 * direction.current,
+          };
 
-            if (currentColor.current === listColors.length - 1) {
-              currentColor.current = 0;
-            } else {
-              currentColor.current++;
-            }
-            let d1x = Math.round((lastPoint.x + 0.3) * 100) / 100;
-            let d1y = 0;
-
-            setDatas2(prev2 => {
-              return [
-                ...prev2,
-                {
-                  color: listColors[currentColor.current],
-                  data: [
-                    {
-                      x: d1y,
-                      y: d1y / d1x,
-                    },
-                  ],
-                },
-              ];
-            });
-
-            return [
-              ...prev,
-              {
-                color: listColors[currentColor.current],
-                data: [{x: d1x, y: d1y}],
-              },
-            ];
-          }
-
-          const d1x = Math.round((lastPoint.x + 0.03) * 100) / 100;
-          const d1y =
-            Math.round((lastPoint.y + 0.1 * direction.current) * 100) / 100;
-
-          prev[currentIndex.current].data.push({
-            x: d1x,
-            y: d1y,
+          setDatas(prev => {
+            prev[currentIndex.current].data.push(lastPoint.current);
+            return [...prev];
           });
 
           setDatas2(prev2 => {
             prev2[currentIndex.current].data.push({
-              x: d1y,
-              y: d1y / d1x,
+              x: lastPoint.current.y,
+              y: lastPoint.current.y / lastPoint.current.x,
             });
-
             return [...prev2];
           });
-
-          return [...prev];
-        });
-      }, 300);
-    } else {
-      clearInterval(interval.current);
-    }
-
-    return () => {
-      clearInterval(interval.current);
-    };
-  }, [running]);
+        }
+      }
+    },
+    running ? delay : null,
+  );
 
   return (
     <View>
-      <VicChartScatter
+      {/* <VicChartScatter
         datas={datas2}
         label={{x: 'Lít', y: 'Lít/giây'}}
         domain={{x: [0, 7.8], y: [-16, 16]}}
         padding={{y: 2}}
         tickValue={{stepX: 0.6, stepY: 4}}
-      />
+      /> */}
+
       <VicChartScatter
         datas={datas}
         label={{x: 'Giây', y: 'Lít'}}

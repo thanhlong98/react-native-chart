@@ -62,7 +62,7 @@ export default function VicChartScatter(props) {
             key={i}
             style={{data: {fill: d.color}}}
             size={2}
-            domain={domain}
+            // domain={domain}
             data={d.data}
           />
         ))}
