@@ -9,6 +9,7 @@
 import React, {useState} from 'react';
 import {SafeAreaView, StatusBar, View, Button, StyleSheet} from 'react-native';
 import VicChart from './screens/VictoryChart';
+import LineChartScreen from './screens/ChartWrapper';
 
 const App = () => {
   const [running, setRunning] = useState(false);
@@ -30,6 +31,7 @@ const App = () => {
           <Button title="Bắt đầu lại di" onPress={handleStart} />
           <Button title="Kết thúc" onPress={handleEnd} />
         </View>
+        {/* <LineChartScreen /> */}
       </SafeAreaView>
     </>
   );
