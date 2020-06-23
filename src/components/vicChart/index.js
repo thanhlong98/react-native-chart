@@ -21,14 +21,7 @@ export default function VicChartScatter(props) {
   const {datas, label, domain, padding, tickValue} = props;
   return (
     <View>
-      <VictoryChart
-        containerComponent={
-          <VictoryZoomContainer
-            zoomDimension="x"
-            // zoomDomain={{x: [0, 7.8]}}
-            // minimumZoom={{x: 0.6}}
-          />
-        }>
+      <VictoryChart>
         <VictoryAxis
           label={label.y}
           dependentAxis
@@ -62,7 +55,7 @@ export default function VicChartScatter(props) {
             key={i}
             style={{data: {fill: d.color}}}
             size={2}
-            // domain={domain}
+            domain={domain}
             data={d.data}
           />
         ))}

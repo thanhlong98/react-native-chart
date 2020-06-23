@@ -95,13 +95,13 @@ export default function VicChart({running}) {
 
   return (
     <View>
-      {/* <VicChartScatter
+      <VicChartScatter
         datas={datas2}
         label={{x: 'Lít', y: 'Lít/giây'}}
         domain={{x: [0, 7.8], y: [-16, 16]}}
         padding={{y: 2}}
         tickValue={{stepX: 0.6, stepY: 4}}
-      /> */}
+      />
 
       <VicChartScatter
         datas={datas}

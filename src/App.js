@@ -27,7 +27,7 @@ const App = () => {
     <>
       <StatusBar barStyle="dark-content" />
       <SafeAreaView>
-        <VicChart running={running} />
+        {/* <VicChart running={running} />
         <View style={styles.btnContainer}>
           <Button
             style={styles.btn}
@@ -35,9 +35,9 @@ const App = () => {
             onPress={handleStart}
           />
           <Button style={styles.btn} title="Kết thúc" onPress={handleEnd} />
-        </View>
+        </View> */}
         {/* <LineChartScreen /> */}
-        {/* <D3Chart /> */}
+        <D3Chart />
       </SafeAreaView>
     </>
   );

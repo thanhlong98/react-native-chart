@@ -7,7 +7,7 @@ const d3 = {
   shape,
 };
 
-function createScaleX(minX, maxX, startX, width) {
+function createScaleX(minX, maxX, width) {
   return d3.scale
     .scaleLinear()
     .domain([minX, maxX])
@@ -15,7 +15,7 @@ function createScaleX(minX, maxX, startX, width) {
     .nice();
 }
 
-function createScaleY(minY, maxY, startY, height) {
+function createScaleY(minY, maxY, height) {
   return d3.scale
     .scaleLinear()
     .domain([minY, maxY])
@@ -23,15 +23,7 @@ function createScaleY(minY, maxY, startY, height) {
     .nice();
 }
 
-export function createLineGraph({
-  data,
-  xAccessor,
-  yAccessor,
-  startX,
-  startY,
-  width,
-  height,
-}) {
+export function createLineGraph({data, xAccessor, yAccessor, width, height}) {
   // Collect all y values.
   const allXValues = data.reduce((all, datum) => {
     all.push(xAccessor(datum));
@@ -40,7 +32,7 @@ export function createLineGraph({
 
   // Get the min and max x value.
   const extentX = d3Array.extent(allXValues);
-  const scaleX = createScaleX(extentX[0], extentX[1], startX, width);
+  const scaleX = createScaleX(extentX[0], extentX[1], width);
 
   // Collect all y values.
   const allYValues = data.reduce((all, datum) => {
@@ -50,14 +42,12 @@ export function createLineGraph({
 
   // Get the min and max y value.
   const extentY = d3Array.extent(allYValues);
-  const scaleY = createScaleY(extentY[0], extentY[1], startY, height);
+  const scaleY = createScaleY(extentY[0], extentY[1], height);
 
   const lineShape = d3.shape
     .line()
     .x(d => scaleX(xAccessor(d)))
     .y(d => scaleY(yAccessor(d)));
-
-  console.log(createScaleX(extentX[0], extentX[1], startX, width)(1));
 
   return {
     data,
@@ -68,3 +58,20 @@ export function createLineGraph({
     path: lineShape(data),
   };
 }
+
+const getTickPoints = (range, extentX, extentY) => {
+  let ticksX = [],
+    ticksY = [];
+  for (let i = extentX[0]; i <= extentX[1]; i += range.x) {
+    ticksX.push(i);
+  }
+
+  for (let i = extentY[0]; i <= extentY[1]; i += range.x) {
+    ticksY.push(i);
+  }
+
+  return {
+    ticksX,
+    ticksY,
+  };
+};

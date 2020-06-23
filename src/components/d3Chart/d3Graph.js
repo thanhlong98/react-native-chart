@@ -16,27 +16,39 @@ export default function D3Graph(props) {
     data,
     xAccessor,
     yAccessor,
-    startX: fullPaddingSize,
-    startY: fullPaddingSize,
     width: width_chart,
     height: height_chart,
   });
-  console.log(lineGraph.path);
+
   return (
-    <Svg width={width} height={height} style={{backgroundColor: 'red'}}>
-      <G x={PaddingSize} y={5}>
-        <Path d={lineGraph.path} stroke="#000" strokeWidth={1} />
-        <Line
-          x1={PaddingSize}
-          y1={height + PaddingSize}
-          x2={width + PaddingSize}
-          y2={height + PaddingSize}
-          stroke={'#fff'}
-          strokeWidth="1"
-        />
+    <Svg width={width} height={height} style={styles.svg}>
+      <G x={PaddingSize} y={PaddingSize}>
+        <Path d={lineGraph.path} stroke="#000" strokeWidth={2} />
+        <G fill="none">
+          <Line
+            x1={0}
+            y1={height_chart}
+            x2={0}
+            y2={0}
+            stroke="#000"
+            strokeWidth={1}
+          />
+          <Line
+            x1={0}
+            y1={height_chart}
+            x2={width_chart}
+            y2={height_chart}
+            stroke="#000"
+            strokeWidth={1}
+          />
+        </G>
       </G>
     </Svg>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  svg: {
+    backgroundColor: 'green',
+  },
+});
