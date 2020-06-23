@@ -12,7 +12,7 @@ export default function VicChart({running}) {
   const currentColor = useRef(0);
   const direction = useRef(1);
   const lastPoint = useRef(null);
-  const [delay, setDelay] = useState(30);
+  const [delay, setDelay] = useState(300);
 
   useInterval(
     () => {
@@ -122,17 +122,24 @@ const styles = StyleSheet.create({
   },
 });
 
-// {x: 0, y: 0},
-// {x: 0.3, y: 3},
-// {x: 0.6, y: 8},
-// {x: 0.9, y: 7.8},
-// {x: 1.2, y: 6},
-// {x: 1.5, y: 4},
-// {x: 1.8, y: 1},
-// {x: 1.7, y: -1},
-// {x: 1.5, y: -4},
-// {x: 1.2, y: -7},
-// {x: 0.9, y: -6},
-// {x: 0.6, y: -5},
-// {x: 0.3, y: -2},
-// {x: 0.1, y: -1},
+// const dataTemp = [
+//   {
+//     color: 'red',
+//     data: [
+//       {x: 0, y: 0},
+//       {x: 0.3, y: 3},
+//       {x: 0.6, y: 8},
+//       {x: 0.9, y: 7.8},
+//       {x: 1.2, y: 6},
+//       {x: 1.5, y: 4},
+//       {x: 1.8, y: 1},
+//       {x: 1.7, y: -1},
+//       {x: 1.5, y: -4},
+//       {x: 1.2, y: -7},
+//       {x: 0.9, y: -6},
+//       {x: 0.6, y: -5},
+//       {x: 0.3, y: -2},
+//       {x: 0.1, y: -1},
+//     ],
+//   },
+// ];

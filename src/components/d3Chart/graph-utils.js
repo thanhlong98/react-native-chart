@@ -56,6 +56,7 @@ export function createLineGraph({data, xAccessor, yAccessor, width, height}) {
       y: scaleY,
     },
     path: lineShape(data),
+    // ...getTickPoints({x: 2, y: 0.8}, extentX, extentY),
   };
 }
 
@@ -66,7 +67,7 @@ const getTickPoints = (range, extentX, extentY) => {
     ticksX.push(i);
   }
 
-  for (let i = extentY[0]; i <= extentY[1]; i += range.x) {
+  for (let i = extentY[0]; i <= extentY[1]; i += range.y) {
     ticksY.push(i);
   }
 
